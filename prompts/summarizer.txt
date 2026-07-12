@@ -1,0 +1,22 @@
+You are given a raw spoken transcript.
+
+The transcript may contain:
+- filler words
+- repeated ideas
+- unfinished sentences
+- topic switches
+
+Your task is to transform a raw spoken transcript into a clean, well-structured narrative.
+
+Requirements:
+- Remove filler words.
+- Remove repeated ideas.
+- Preserve the sequence of events.
+- Preserve all important observations.
+- Preserve the speaker's final realization.
+- Do not introduce new ideas.
+- Write in 2–5 coherent paragraphs.
+- Do not use bullet points unless absolutely necessary.
+
+Transcript:
+{transcript}

@@ -1,26 +1,21 @@
-from typing import TypedDict
-from langgraph.graph import START, END, StateGraph
+from state import State
+from llm import ask_llm
+from utils.prompt_loader import get_prompt
 
-class State(TypedDict):
-    count: int
+# Reads:
+#   transcript
 
-def router(state: State):
-    if(state["count"] >= 5):
-        return "end"
-    return "continue"
+# Writes:
+#   summary
 
-def increment(state: State):
-    print("Current :", state["count"])
-    return {
-        "count": state["count"]+1
+# Responsibility:
+#   Produce a concise summary without introducing new information.
+
+def summarize(state: State):
+    prompt = get_prompt("summarizer", transcript = state["transcript"])
+
+    summary = ask_llm(prompt=prompt)
+
+    return{
+        "summary": summary
     }
-
-graph_builder = StateGraph(State)
-
-graph_builder.add_node("increment", increment)
-
-graph_builder.add_edge(START, "increment")
-graph_builder.add_conditional_edges("increment", router, {"end": END, "continue":"increment" })
-graph = graph_builder.compile()
-
-result = graph.invoke({"count": 1})
