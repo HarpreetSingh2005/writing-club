@@ -1,10 +1,12 @@
 from graph import build_graph
-
+import json
 graph = build_graph()
 
 result = graph.invoke({
     "transcript": "Okay so this is an article for the idea that why to care about people so this is the incidence where I was doing my exercise so normally I don't go to the gym current team but I wanted to exercise right so I started going to the ab public gym where all the old uncles and arteries come and the first It's really a not the top notch position you should work because it's really know that motivating so one day I was in this mode only like iron module to work rather than I was I really don't want to work there not go to Jim there because obviously that was not my perfect place now the equipments for the great know there were the motivation there were all the old uncles and our design no people know someone of age of my but then I was in the M okay yeah just give this and just talk to in this but at this at the same moment I servant girl so there was this when uncle came with this one a Harshit Harsh small child and she was on the wheelchair so she couldn't really work and observing her I realize that it's not about the uncle and aunty and no one was actually looking for like how is unknown was even even care about her so in the lamps nomenon daily give a shit about her and the point is that moment I saw like who am I showing this particular exercise two even is someone judges me like oh see like this guys but we were working with those artis and make me fun of me but what if in the future I don't work and for that reason my legs or my body stuff stop working out so at that moment these guys won't come to support me or to take care so why the hell should I even here to them even though I would probably shock is my the gym click way I work and how the environment is it's really the like the first environment you could ever go with like for the motivation and all that but the only thing is like these people even if they are making fun of you but when you if you stop working these people want even give a shit if you have really good or review working well a very not and even people don't even care thank you there they might be making fun for few minutes but after that day would forget that see you should just don't care and I just that is the basic idea about this",
-    "s": ""
+    "summary": "",
+    "discovered_perspectives": []
 })
 
-print(result)
+
+print(json.dumps(result, indent=4, default=str))
