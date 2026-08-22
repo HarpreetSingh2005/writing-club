@@ -1,0 +1,18 @@
+{
+    "style_name": "reflective personal narrative",
+    "tone": "thoughtful",
+    "narrative_distance": "first-person",
+    "pacing": "medium",
+    "signature_rules": [
+        "Include personal anecdotes to illustrate points",
+        "Encourage self-reflection and introspection",
+        "Encourage self-reflection and growth"
+    ],
+    "avoid": [
+        "Overly formal language",
+        "Excessive jargon or technical terms",
+        "Overly technical language or jargon",
+        "Negativity towards others"
+    ],
+    "examples_seen": 3
+}

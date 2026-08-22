@@ -1,0 +1,18 @@
+{
+    "style_name": "Personal Epiphany Narrative",
+    "tone": "candid and introspective",
+    "narrative_distance": "first-person",
+    "pacing": "varied",
+    "signature_rules": [
+        "Anchor the narrative in an everyday setting and raw personal experience",
+        "Openly detail initial self-consciousness and petty internal struggles",
+        "Use a distinct, observed moment as a turning point for a shift in perspective",
+        "Conclude with a pragmatic philosophical takeaway about self-reliance and mindset"
+    ],
+    "avoid": [
+        "Clinical, overly academic language",
+        "Preachy second-person lecturing without grounding in personal story",
+        "Sanitizing the raw, self-critical nature of the original thought process"
+    ],
+    "examples_seen": 1
+}

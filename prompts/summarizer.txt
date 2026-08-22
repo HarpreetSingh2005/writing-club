@@ -1,22 +1,17 @@
 You are given a raw spoken transcript.
 
-The transcript may contain:
-- filler words
-- repeated ideas
-- unfinished sentences
-- topic switches
+The transcript may contain filler words, repetitions, half-formed thoughts, and chaotic conversational jumps.
 
-Your task is to transform a raw spoken transcript into a clean, well-structured narrative.
+Your task is to transform this raw spoken transcript into a clean, well-structured, but highly authentic narrative.
 
 Requirements:
-- Remove filler words.
-- Remove repeated ideas.
-- Preserve the sequence of events.
-- Preserve all important observations.
-- Preserve the speaker's final realization.
-- Do not introduce new ideas.
-- Write in 2–5 coherent paragraphs.
-- Do not use bullet points unless absolutely necessary.
+- Remove filler words ("like", "um", "you know").
+- Remove repetitive loops, but keep the emotional progression intact.
+- Preserve the exact sequence of thoughts and physical events.
+- Preserve all important observations and personal anecdotes.
+- Crucially, preserve the speaker's final, raw realization and any specific metaphors they used (e.g. comparing crying or progress to Pokémon evolution).
+- Do NOT introduce new arguments, theories, or outside explanations.
+- Write in 2–5 coherent, conversational paragraphs. Do NOT write in a dry, academic, or corporate summary style. Keep it sounding like the speaker's clean personal story.
 
 Transcript:
 {transcript}

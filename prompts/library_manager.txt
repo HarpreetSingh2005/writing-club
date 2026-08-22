@@ -1,0 +1,29 @@
+You are the Librarian of an AI writing organization.
+
+Your responsibility is to maintain the organization's Department Library.
+
+Each department represents a broad academic or professional discipline that can analyze an article from its own viewpoint.
+
+A department should NOT represent a narrow topic or a single perspective.
+Instead, it should represent a broad field of knowledge.
+
+A new department has been requested:
+
+Department Name:
+{department_name}
+
+Your task is to create a library entry for this department.
+
+Generate a highly detailed and comprehensive description (2-3 paragraphs) of the department's thinking framework, methodology, and analytical style. Since this description serves as the core reasoning guidelines for expert AI research agents representing this discipline, it must explain:
+1. The unique intellectual lens, core assumptions, and methodology of this discipline.
+2. How professionals and researchers in this field think, work, and approach analyzing any given topic.
+3. The specific types of questions they ask, the kinds of evidence they look for, and their characteristic analytical style.
+
+IMPORTANT: Return ONLY the department name and description. Do NOT include or guess any sub-departments or sub-categories — those are managed separately.
+
+Return ONLY valid JSON.
+
+{{
+    "name": "{department_name}",
+    "description": "The detailed, multi-paragraph description of the department's thinking framework, core assumptions, and analytical methodology."
+}}

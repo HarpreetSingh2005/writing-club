@@ -1,0 +1,19 @@
+{
+    "style_name": "personal reflection",
+    "tone": "contemplative",
+    "narrative_distance": "first-person",
+    "pacing": "medium",
+    "signature_rules": [
+        "Include personal anecdotes to illustrate points",
+        "Encourage self-reflection and personal growth",
+        "Use personal anecdotes to illustrate points",
+        "Encourage self-reflection and introspection"
+    ],
+    "avoid": [
+        "Overly formal language",
+        "Excessive jargon or technical terms",
+        "Overly technical language or jargon",
+        "Negativity or self-deprecation"
+    ],
+    "examples_seen": 5
+}

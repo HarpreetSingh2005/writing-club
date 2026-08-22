@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Writing Club — AI Writing Organization</title>
+    <meta name="description" content="Turn your raw voice ideas into polished articles with an AI editorial team.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="app">
+
+        <!-- ═══════════ INPUT SCREEN ═══════════ -->
+        <section id="input-screen" class="screen active">
+            <div class="container">
+                <div class="logo">
+                    <span class="logo-icon">WC</span>
+                    <h1>Writing Club</h1>
+                    <p class="tagline">Chat with the editorial team from raw idea to approved article.</p>
+                </div>
+
+                <div class="input-card">
+                    <div class="tabs">
+                        <button class="tab active" data-tab="text">Paste Text</button>
+                        <button class="tab" data-tab="audio">Upload Audio</button>
+                    </div>
+
+                    <div class="tab-content active" id="tab-text">
+                        <textarea id="transcript-input" placeholder="Paste your raw spoken transcript here..." rows="8"></textarea>
+                    </div>
+
+                    <div class="tab-content" id="tab-audio">
+                        <div class="upload-zone" id="upload-zone">
+                            <div class="upload-icon">Audio</div>
+                            <p>Drop an audio file here or click to browse</p>
+                            <p class="upload-hint">Supports: MP3, WAV, M4A, OGG, FLAC, AAC, WEBM</p>
+                            <input type="file" id="audio-input" accept=".mp3,.wav,.m4a,.ogg,.flac,.aac,.wma,.webm,.mp4" hidden>
+                        </div>
+                        <div id="file-info" class="file-info hidden"></div>
+                    </div>
+
+                    <button id="start-btn" class="btn-primary">
+                        <span class="btn-text">Start chat</span>
+                        <span class="btn-loader hidden">Processing...</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══════════ CHAT SCREEN ═══════════ -->
+        <section id="chat-screen" class="screen">
+            <div class="chat-shell">
+                <header class="chat-header">
+                    <div>
+                        <p class="chat-kicker">Writing Club</p>
+                        <h2>Editorial chat</h2>
+                    </div>
+                    <div id="chat-status" class="status-pill">Working</div>
+                </header>
+
+                <main id="chat-messages" class="chat-messages" aria-live="polite"></main>
+
+                <section id="decision-panel" class="decision-panel hidden">
+                    <div>
+                        <h3 id="decision-question">Approve this?</h3>
+                        <p id="decision-hint"></p>
+                    </div>
+                    <textarea id="feedback-input" placeholder="Review notes for changes, if needed..." rows="3"></textarea>
+                    <div class="btn-row">
+                        <button id="no-btn" class="btn-secondary">No, revise</button>
+                        <button id="yes-btn" class="btn-primary">Yes, approve</button>
+                    </div>
+                </section>
+
+                <div id="final-actions" class="final-actions hidden">
+                    <button id="copy-btn" class="btn-secondary">Copy article</button>
+                    <button id="new-btn" class="btn-primary">New article</button>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

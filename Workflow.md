@@ -2,25 +2,22 @@
 
         ↓
 
-Transcription
+Voice Transcript
 │
 ▼
-Summarizer
+Summarizer / Transcript Cleaner
 │
 ▼
-Category Discovery
+Perspective Discovery
 │
 ▼
-Top 5 Categories
+Department Library Manager
 │
 ▼
-Perspective Library
+Writing Style Librarian
 │
 ▼
-Thinking Frameworks
-│
-▼
-Research Employees (Parallel)
+Expert Research Employees
 │
 ▼
 Research Reports
@@ -29,7 +26,23 @@ Research Reports
 Insight Curator
 │
 ▼
-Top Insights
+Flow Architect
 │
 ▼
-Editorial Team
+Small Proposed Flow
+│
+▼
+User Approval / Correction
+│
+├── Not Approved → revise with feedback
+│
+└── Approved
+    │
+    ▼
+Article Writer
+│
+▼
+Draft Review With User
+│
+▼
+Iterative Rewrite / Final Article

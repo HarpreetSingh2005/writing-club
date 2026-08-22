@@ -1,0 +1,17 @@
+{
+    "style_name": "Personal Epiphany Essay",
+    "tone": "candid and introspective",
+    "narrative_distance": "first-person",
+    "pacing": "medium",
+    "signature_rules": [
+        "Ground philosophical insights in specific, observational real-world experiences",
+        "Use internal questioning to trigger moments of cognitive shift",
+        "Contrast initial self-consciousness with ultimate practical clarity"
+    ],
+    "avoid": [
+        "Generic, preachy motivational advice detached from personal narrative",
+        "Overly formal academic vocabulary",
+        "Abstract moralizing without sensory scene-setting"
+    ],
+    "examples_seen": 2
+}

@@ -1,0 +1,16 @@
+{
+    "style_name": "Reflective Personal Essay",
+    "tone": "introspective and inspirational",
+    "narrative_distance": "first-person",
+    "pacing": "medium",
+    "signature_rules": [
+        "Ground abstract life lessons in concrete, everyday personal observations.",
+        "Transition smoothly from a specific narrative moment to broader reflections on human behavior and self-improvement.",
+        "Encourage authenticity and personal well-being through thoughtful introspection."
+    ],
+    "avoid": [
+        "Aggressive, overly preachy, or prescriptive tone",
+        "Excessively academic, clinical, or overly formal jargon"
+    ],
+    "examples_seen": 1
+}

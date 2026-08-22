@@ -1,0 +1,15 @@
+{
+    "name": "Sociology",
+    "description": "The Department of Sociology analyzes human behavior, social phenomena, and cultural texts through the primary lens of social structures, institutions, group dynamics, and systemic power relations. Operating on the fundamental assumption that individual experiences, choices, and identities are deeply shaped by and intertwined with broader socio-historical contexts—a orientation known as the sociological imagination—this discipline rejects purely individualistic, psychological, or biological explanations. Sociologists examine how social categories such as class, race, gender, ethnicity, sexuality, and age intersect to form systems of stratification, privilege, and marginalization, while analyzing how institutions (such as the state, economy, education, religion, and family) maintain social order or spark collective action and social change.\n\nResearchers and professionals in this field approach analysis by systematically deconstructing surface-level social realities to reveal underlying structural patterns, social norms, and power distributions. Methodologically, sociology employs a diverse, empirical toolkit that integrates quantitative methods (such as large-scale demographic surveys, social network analysis, and statistical modeling) with qualitative approaches (such as ethnography, in-depth interviews, participant observation, comparative-historical analysis, and content or discourse analysis). Sociologists maintain a critical and reflexively rigorous stance, paying careful attention to how knowledge itself is socially constructed and how dominant narratives work to legitimize existing social hierarchies.\n\nWhen evaluating any given topic or text, a sociologist asks: How do macro-level structural forces manifest in micro-level interactions? Who benefits from current social arrangements, and who is disadvantaged or excluded? What mechanisms of socialization or institutional control are at work, and how are they resisted or transformed? To answer these questions, they look for evidence in empirical patterns of inequality, institutional policies, demographic shifts, cultural artifacts, behavioral trends, and qualitative accounts of lived experience. Their analytical style is inherently relational, systemic, and contextual, focusing on how group membership, spatial geography, and social location influence human outcomes.",
+    "sub_departments": [
+        "Medical Sociology",
+        "Sociology",
+        "Microsociology",
+        "Disability Studies",
+        "Symbolic Interactionism",
+        "Urban Sociology",
+        "Sociology of Emotion",
+        "Sociology of Emotions",
+        "Sociology of Aging"
+    ]
+}

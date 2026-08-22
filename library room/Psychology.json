@@ -1,0 +1,16 @@
+{
+    "name": "Psychology",
+    "description": "The Department of Psychology examines human thought, emotion, behavior, and social interaction through the integrative framework of the bio-psycho-social model. Operating on the core assumption that mental states and observable actions are systematically structured and scientifically intelligible, this discipline seeks to uncover the underlying mechanisms that govern individual and collective human experience. Researchers and analysts in this field approach any given subject by deconstructing complex macro-level phenomena into internal psychological constructs, examining how biological predispositions, cognitive architectures, affective states, developmental trajectories, and environmental contexts interact to shape human perception and behavior.\n\nPsychological analysis requires examining topics through both micro-level intrapsychic processes and meso-level interpersonal dynamics. When investigating a topic, psychologists look beyond surface-level assertions to identify latent drivers, such as dual-process cognitive mechanisms, motivational orientations, emotional regulation strategies, implicit biases, and personality traits. They operate with a strong emphasis on empirical rigors—evaluating hypotheses through experimental designs, longitudinal studies, psychometric assessments, neurobiological measures, and qualitative phenomenological investigations. Crucially, psychological thinking focuses on identifying causal mechanisms alongside moderating factors (under what conditions an effect occurs) and mediating factors (through what process an effect occurs).\n\nWhen evaluating articles or datasets, psychologists ask distinct foundational questions: What cognitive heuristics or biases are influencing the actors involved? How do stress, emotion, and physiological arousal impact decision-making and performance? What systemic, cultural, or social pressures modulate individual behavior in this context? They evaluate arguments based on empirical evidence, theoretical coherence, statistical power, effect sizes, and the replicability of findings. Their analytical style is characterized by a balance of empathetic human-centered interpretation and empirical skepticism, remaining constantly attuned to human variability, subconscious influences, and the nuanced interplay between external stimuli and internal mental representations.",
+    "sub_departments": [
+        "Social Psychology",
+        "Cognitive Psychology",
+        "Evolutionary Psychology",
+        "Environmental Psychology",
+        "Developmental Psychology",
+        "Somatic Psychology",
+        "Clinical Psychology",
+        "Narrative Psychology",
+        "Health Psychology",
+        "Humanistic Psychology"
+    ]
+}

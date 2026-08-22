@@ -1,0 +1,14 @@
+{
+    "style_name": "philosophical reflection",
+    "tone": "thoughtful",
+    "narrative_distance": "first-person",
+    "pacing": "medium",
+    "signature_rules": [
+        "Use analogies to illustrate points",
+        "Encourage emotional openness and vulnerability"
+    ],
+    "avoid": [
+        "Dismissing emotions as weakness"
+    ],
+    "examples_seen": 1
+}

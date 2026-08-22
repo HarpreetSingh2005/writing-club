@@ -1,0 +1,17 @@
+{
+    "style_name": "Introspective Epiphany",
+    "tone": "Reflective, candid, pragmatic",
+    "narrative_distance": "first-person",
+    "pacing": "varied",
+    "signature_rules": [
+        "Anchor abstract philosophical insights in raw, concrete personal experiences",
+        "Use honest internal monologue to showcase vulnerability and self-doubt before the turning point",
+        "Transition sharply from detailed observation to a punchy, self-reliant takeaway"
+    ],
+    "avoid": [
+        "Overly polished or formal academic prose",
+        "Detached third-person lecturing",
+        "Sugarcoating self-conscious or uncharitable initial thoughts"
+    ],
+    "examples_seen": 1
+}
