@@ -1,0 +1,14 @@
+{
+    "style_name": "Self-Reflection with Humor",
+    "tone": "raw, funny, and warm with a hint of seriousness",
+    "narrative_distance": "first-person",
+    "pacing": "medium",
+    "signature_rules": [
+        "Blend personal anecdotes with lessons learned, as if explaining to an older sibling."
+    ],
+    "avoid": [
+        "Overly dramatic expressions or deep philosophical jargon."
+    ],
+    "length_guidance": "Aim for a target of 1000 words by balancing humor and depth, allowing for a mix of light-hearted storytelling and reflective insights.",
+    "examples_seen": 1
+}

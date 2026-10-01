@@ -1,0 +1,17 @@
+{
+    "style_name": "Brotherly Explanation",
+    "tone": "raw and serious",
+    "narrative_distance": "second-person",
+    "pacing": "medium",
+    "signature_rules": [
+        "Use analogies sparingly but effectively.",
+        "Incorporate sighs or pauses for emphasis.",
+        "Keep explanations straightforward and to the point."
+    ],
+    "avoid": [
+        "Overly complex language or concepts.",
+        "Digressions that stray from the main point."
+    ],
+    "length_guidance": "Aim for depth and clarity within the 1000-word limit, allowing for moments of reflection without losing focus.",
+    "examples_seen": 1
+}

@@ -13,7 +13,11 @@ from utils.pipeline_logger import log_entry
 #   Produce a concise summary without introducing new information.
 
 def summarize(state: State):
-    prompt = get_prompt("summarizer", transcript = state["transcript"])
+    prompt = get_prompt(
+        "summarizer",
+        article_length=state.get("article_length", ""),
+        transcript=state["transcript"],
+    )
 
     summary = ask_llm(prompt=prompt, task="summarization")
 

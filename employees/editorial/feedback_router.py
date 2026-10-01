@@ -29,6 +29,7 @@ def feedback_router(state: State):
             "feedback_route": "draft",
             "next_action": "drafting",
             "revision_count": 0,  # Reset counter for the new draft phase
+            "requires_human_review": False,  # New phase: the draft critic will re-evaluate
             "pipeline_log": [
                 log_entry("Feedback Router", "🔀", "Flow approved → drafting", {}),
             ],
@@ -36,11 +37,13 @@ def feedback_router(state: State):
 
     # Fast-path: Draft approved with NO feedback → mark complete
     if review_stage == "draft" and state.get("article_approved") and not has_feedback:
+        overridden = bool(state.get("requires_human_review", False))
+        status = "HUMAN-OVERRIDDEN — last auto-critic verdict was a rejection" if overridden else "AUTO-APPROVED — last auto-critic verdict passed"
         return {
             "feedback_route": "complete",
             "next_action": "complete",
             "pipeline_log": [
-                log_entry("Feedback Router", "🔀", "Draft approved → complete", {}),
+                log_entry("Feedback Router", "🔀", f"Draft approved → complete ({status})", {}),
             ],
         }
 

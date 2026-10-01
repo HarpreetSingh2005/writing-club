@@ -8,6 +8,7 @@ from utils.pipeline_logger import log_entry
 def insight_curator(state: State):
     prompt = get_prompt(
         "insight_curator",
+        transcript=state["transcript"],
         summary=state["summary"],
         reports=reports_to_json(state.get("research_reports", [])),
         user_feedback=state.get("user_feedback", ""),

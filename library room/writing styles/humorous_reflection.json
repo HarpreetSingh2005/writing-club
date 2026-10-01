@@ -1,0 +1,16 @@
+{
+    "style_name": "humorous reflection",
+    "tone": "funny but at the same time serious",
+    "narrative_distance": "first-person",
+    "pacing": "medium",
+    "signature_rules": [
+        "Use humor to highlight serious points.",
+        "Incorporate relatable anecdotes to engage the reader."
+    ],
+    "avoid": [
+        "Overly technical language or jargon.",
+        "Neglecting the emotional aspect of the experience."
+    ],
+    "length_guidance": "Aim for a balance between depth and brevity, ensuring that humor does not overshadow the serious message while maintaining a target of 1000 words.",
+    "examples_seen": 1
+}

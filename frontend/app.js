@@ -10,7 +10,8 @@ let latestReviewData = null;
 
 const inputScreen = document.getElementById("input-screen");
 const chatScreen = document.getElementById("chat-screen");
-const transcriptInput = document.getElementById("transcript-input");
+const ideaInput = document.getElementById("idea-input");
+const lengthInput = document.getElementById("length-input");
 const uploadZone = document.getElementById("upload-zone");
 const audioInput = document.getElementById("audio-input");
 const fileInfo = document.getElementById("file-info");
@@ -64,20 +65,34 @@ function handleFileSelect(file) {
 
 startBtn.addEventListener("click", async () => {
     const formData = new FormData();
-    const rawText = transcriptInput.value.trim();
+    const rawMaterial = ideaInput.value.trim();
+    const articleLength = lengthInput.value.trim();
+
+    if (activeTab === "text" && !rawMaterial) {
+        alert("Please add your idea, notes, or transcript first.");
+        ideaInput.focus();
+        return;
+    }
+
+    if (!articleLength || Number(articleLength) <= 0) {
+        alert("Please enter a target word count, like 800.");
+        lengthInput.focus();
+        return;
+    }
+
+    formData.append("user_idea", rawMaterial);
+    formData.append("article_length", articleLength);
 
     if (activeTab === "text") {
-        if (!rawText) {
-            alert("Please paste a text transcript first.");
-            return;
-        }
-        formData.append("transcript", rawText);
-    } else {
+        formData.append("transcript", rawMaterial);
+    } else if (activeTab === "audio") {
         if (!uploadedFile) {
-            alert("Please select or drop an audio file first.");
+            alert("Please select or drop an audio file, or switch back to Write or Paste.");
             return;
         }
         formData.append("audio", uploadedFile);
+    } else if (activeTab === "demo") {
+        formData.append("use_default", "true");
     }
 
     resetConversation();
@@ -89,7 +104,15 @@ startBtn.addEventListener("click", async () => {
 
         currentThreadId = data.thread_id;
         showScreen(chatScreen);
-        addMessage("user", activeTab === "text" ? rawText : `Uploaded audio: ${uploadedFile.name}`);
+        const materialLabel = activeTab === "demo"
+            ? "Built-in demo transcript"
+            : activeTab === "audio"
+                ? `Uploaded audio: ${uploadedFile.name}`
+                : rawMaterial;
+        addMessage(
+            "user",
+            `Material: ${materialLabel}\nTarget words: ${articleLength}`
+        );
         addMessage("assistant", "I have your raw material. I will work through the editorial pipeline and pause when I need your yes or no.");
         updateConversation(data);
         startPolling();
@@ -138,6 +161,11 @@ function updateConversation(data) {
             kind: "draft",
             content: data.draft,
         });
+        if (data.final_review && Object.keys(data.final_review).length > 0) {
+            addMessage("assistant", "I also saved a final editorial review in the project archive.", {
+                details: data.final_review,
+            });
+        }
         finalActions.classList.remove("hidden");
         chatStatus.textContent = "Complete";
         return;
@@ -164,14 +192,19 @@ function showReviewRequest(data) {
     chatStatus.textContent = "Waiting for your decision";
 
     const isDraft = data.review_stage === "draft";
-    addMessage("assistant", data.question || (isDraft ? "Approve this article draft?" : "Approve this article flow?"), {
+    const reviewText = data.question || (isDraft ? "Approve this article draft?" : "Approve this article flow?");
+    const reviewPacketText = isDraft && data.review_packet_path
+        ? `${reviewText}\n\nReview files saved at: ${data.review_packet_path}`
+        : reviewText;
+
+    addMessage("assistant", reviewPacketText, {
         kind: isDraft ? "draft" : "flow",
         content: isDraft ? data.draft : data.proposed_flow,
     });
 
     decisionQuestion.textContent = data.question || (isDraft ? "Approve this article draft?" : "Approve this article flow?");
     decisionHint.textContent = isDraft
-        ? "Choose Yes to finish, or No and add review notes for the writer."
+        ? "Check the saved review packet, then choose Yes to finish or No and add review notes for the writer."
         : "Choose Yes to continue to drafting, or No and add review notes for the flow architect.";
     feedbackInput.value = "";
     decisionPanel.classList.remove("hidden");

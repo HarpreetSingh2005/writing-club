@@ -1,0 +1,15 @@
+{
+    "style_name": "Reflective Humor",
+    "tone": "funny and serious",
+    "narrative_distance": "first-person",
+    "pacing": "medium",
+    "signature_rules": [
+        "Blend humor with serious reflections on personal experiences.",
+        "Use relatable anecdotes to illustrate broader themes."
+    ],
+    "avoid": [
+        "Overly technical jargon or fitness terminology that may alienate readers."
+    ],
+    "length_guidance": "Aim for depth in storytelling while maintaining a light-hearted tone; use humor to engage readers without sacrificing the seriousness of the message.",
+    "examples_seen": 1
+}

@@ -1,18 +1,53 @@
 {
-    "style_name": "reflective personal narrative",
-    "tone": "thoughtful",
+    "style_name": "Reflective Personal Narrative",
+    "tone": "introspective and candid",
     "narrative_distance": "first-person",
     "pacing": "medium",
     "signature_rules": [
         "Include personal anecdotes to illustrate points",
         "Encourage self-reflection and introspection",
-        "Encourage self-reflection and growth"
+        "Encourage self-reflection and growth",
+        "Use personal anecdotes to illustrate broader themes.",
+        "Incorporate introspective moments to connect with the reader's emotions.",
+        "Incorporate personal anecdotes to illustrate broader themes.",
+        "Use conversational language to create a relatable tone.",
+        "Incorporate personal anecdotes to illustrate key points.",
+        "Use vivid imagery to describe the gym environment and the emotional impact of the incident.",
+        "Engage the reader with rhetorical questions to provoke thought.",
+        "Incorporate moments of self-reflection and realization.",
+        "Use introspective language to convey emotional depth.",
+        "Use vivid imagery to evoke emotions and create a connection with the reader.",
+        "Incorporate moments of emotional reflection to deepen the narrative.",
+        "Incorporate personal anecdotes to illustrate reflections.",
+        "Use conversational language to maintain an informal tone.",
+        "Pose rhetorical questions to engage the reader's thoughts.",
+        "Use reflective questions to engage the reader's thoughts.",
+        "Use conversational language to create intimacy with the reader.",
+        "Include moments of reflection to deepen the emotional impact."
     ],
     "avoid": [
         "Overly formal language",
         "Excessive jargon or technical terms",
         "Overly technical language or jargon",
-        "Negativity towards others"
+        "Negativity towards others",
+        "Overly technical language or jargon.",
+        "Negativity or harsh judgments about others.",
+        "Overly technical jargon or formal language.",
+        "Neglecting emotional engagement with the audience.",
+        "Overly technical language or jargon that detracts from the personal experience.",
+        "Neglecting the emotional journey and realizations that arise from the incident.",
+        "Overly formal language that distances the reader from the personal experience.",
+        "Overly complex language that detracts from the personal nature of the narrative.",
+        "Neglecting the emotional impact of the triggering incident.",
+        "Overly complex language that detracts from the personal voice.",
+        "Excessive focus on external judgments without linking back to personal growth.",
+        "Excessive focus on external judgments without personal insight.",
+        "Overly formal language that detracts from the personal voice.",
+        "Excessive jargon or technical terms that may alienate the audience.",
+        "Neglecting emotional resonance in storytelling.",
+        "Overly formal language or jargon that distances the reader.",
+        "Excessive detail that detracts from the main message."
     ],
-    "examples_seen": 3
+    "examples_seen": 14,
+    "length_guidance": "At 500 words, focus on concise storytelling that captures the essence of the experience while allowing for reflection and insight."
 }

@@ -59,6 +59,18 @@ AVAILABLE_MODELS = [
         tasks=("research", "critique", "drafting", "general"),
     ),
 
+    # Local Ollama as the absolute last resort fallback.
+    # It is intentionally absent from TASK_POLICY, so it always ranks last,
+    # and its high priority ensures it sits behind every cloud provider.
+    ModelConfig(
+        provider="ollama",
+        model=Env.OLLAMA_MODEL,
+        api_keys=[],
+        priority=100,
+        enabled=Env.OLLAMA_ENABLED,
+        tasks=("general",),
+    ),
+
 ]
 
 
@@ -67,33 +79,33 @@ AVAILABLE_MODELS = [
 # Empty strings act as disabled fallbacks.
 TASK_POLICY = {
     # Preferred order of providers for converting speech-to-text or cleaning it up
-    "transcription": ("gemini", "openai"),
-    "transcription_cleanup": ("gemini", "openai", ""),
+    "transcription": ("gemini", "openai", "ollama"),
+    "transcription_cleanup": ("gemini", "openai", "ollama"),
     
     # Preferred order of providers for summarizing transcripts
-    "summarization": ("gemini", "openai", ""),
-    
+    "summarization": ("ollama", "gemini", "openai", "ollama"),
+
     # Preferred order for discovering creative expert perspectives
-    "discovery": ("gemini", "", "openai"),
+    "discovery": ("gemini", "openai", "ollama"),
     
     # Preferred order for researching insights and identifying blind spots
-    "research": ("", "openai", "gemini"),
-    "critique": ("", "openai", "gemini"),
+    "research": ("openai", "gemini", "ollama"),
+    "critique": ("openai", "gemini", "ollama"),
     
     # Preferred order for outlining articles
-    "outline": ("openai", "gemini", ""),
+    "outline": ("openai", "gemini", "ollama"),
     
     # Preferred order for drafting the prose
-    "drafting": ("openai", "", "gemini"),
+    "drafting": ("openai", "", "gemini", "ollama"),
     
     # Preferred order for style modeling and refinement
-    "style_learning": ("openai", "gemini", ""),
+    "style_learning": ("openai", "gemini", "ollama"),
     
     # Automatic evaluation of flow/draft for AI markers and quality (Gemini first, then GPT)
-    "auto_critic": ("gemini", "openai", ""),
+    "auto_critic": ("gemini", "openai", "ollama"),
     
     # General fallback order
-    "general": ("gemini", "", "openai"),
+    "general": ("gemini", "openai", "ollama"),
 }
 
 

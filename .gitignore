@@ -1,12 +1,59 @@
 # Python-generated files
 __pycache__/
-*.py[oc]
+*.py[cod]
+*$py.class
+*.so
 build/
 dist/
 wheels/
-*.egg-info
+*.egg-info/
+.eggs/
 
 # Virtual environments
-.venv
+.venv/
+venv/
+ENV/
+env/
 
+# Environment & secrets
 .env
+.env.*
+!.env.example
+
+# IDE / OS
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Testing / tooling caches
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+
+# Scratch/dev-scratch test dirs
+fuzzytesting/
+.agents/
+
+# Personal media & local runtime input (never commit).
+# Use `uploads/*` (not `uploads/`) so the negation below can re-include .gitkeep.
+uploads/*
+!uploads/.gitkeep
+
+# Local SearXNG instance config (contains a generated server secret_key).
+# Commit searxng/settings.yml.example instead.
+searxng/*
+!searxng/settings.yml.example
+
+*.log
+
+# Generated article run folders (per-run machine output: project_log.txt,
+# review_context_report.txt, draft_for_review.txt, improvement_report.txt).
+# Top-level sample articles in articles/*.txt stay tracked.
+articles/*/
+
+# Package / dependency caches
+.uv-cache/
+.cache/

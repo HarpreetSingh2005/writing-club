@@ -4,6 +4,16 @@ from typing import Annotated, TypedDict
 from models.perspective import DiscoveredPerspective, ExpertReport, WritingFlow
 
 class State(TypedDict):
+    # User's explicit article brief from the intake form
+    user_idea: str
+
+    # Retained for backward compatibility only. Tone is no longer a user-controlled
+    # writing requirement: it emerges from the source, the Author Skill, and the subject.
+    requested_tone: str
+
+    # Target article length requested by the user
+    article_length: str
+
     # Path to the input audio file (if blank, system assumes text transcript input directly)
     audio_file_path: str
 
@@ -52,6 +62,19 @@ class State(TypedDict):
     # Counter tracking automatic revision attempts made by AI critics
     auto_revision_count: int
 
+    # Separate retry budget for truncated/incomplete drafts (Draft Completeness
+    # Check). Consumed on regeneration retries; independent of auto_revision_count.
+    truncation_retry_count: int
+
+    # Why the current draft was flagged incomplete (empty string when complete).
+    incomplete_draft_reason: str
+
+    # Flag set when the last automatic critic verdict was a REJECTION after the
+    # max automatic revisions were reached. The draft/flow then still goes to
+    # user approval, but it is explicitly marked as needing human review /
+    # explicit override — it must never be treated as auto-approved.
+    requires_human_review: bool
+
     # Research reports created by experts analyzing the topic
     research_reports: list[ExpertReport]
     
@@ -60,10 +83,12 @@ class State(TypedDict):
 
     # The generated article text/draft
     draft: str
+
+    # Final editorial review notes stored in the project archive after approval
+    final_review: dict
     
     # The next action node to run
     next_action: str
 
     # Merged log of all pipeline node actions (uses operator.add to append entries)
     pipeline_log: Annotated[list[dict], operator.add]
-

@@ -7,7 +7,11 @@ from utils.pipeline_logger import log_entry
 #Reads Summary and Writes Discovery_perspective
 
 def perspective_discovery(state: State):
-    prompt = get_prompt("perspective_discovery",summary = state["summary"])
+    prompt = get_prompt(
+        "perspective_discovery",
+        summary=state["summary"],
+        transcript=state["transcript"],
+    )
 
     response = ask_llm(prompt=prompt, expect_json=True, task="discovery")
     discovered_perspectives = [

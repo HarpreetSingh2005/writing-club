@@ -131,7 +131,7 @@ def transcriber(state: State):
             f"Unsupported format: {path.suffix}. Supported: {', '.join(sorted(SUPPORTED_AUDIO))}"
         )
 
-    print(f"\n🎤 Transcribing: {path.name}")
+    print(f"\nTranscribing: {path.name}")
     transcript = transcribe_audio(audio_path)
     print(f"[OK] Transcription complete ({len(transcript)} characters)")
 

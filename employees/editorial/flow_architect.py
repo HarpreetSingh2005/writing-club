@@ -11,7 +11,10 @@ def flow_architect(state: State):
     """LangGraph node: proposes a small article flow (outline) for user approval."""
     prompt = get_prompt(
         "flow_architect",
+        user_idea=state.get("user_idea", ""),
+        article_length=state.get("article_length", ""),
         summary=state["summary"],
+        transcript=state.get("transcript", ""),
         insights=json.dumps(state.get("curated_insights", []), ensure_ascii=False, indent=2),
         style_profile=json.dumps(state.get("style_profile", {}), ensure_ascii=False, indent=2),
         user_feedback=state.get("user_feedback", ""),
@@ -38,6 +41,7 @@ def flow_architect(state: State):
                 f"Proposed '{flow.title_direction}' with {len(flow.sections)} sections",
                 {
                     "tone": flow.tone,
+                    "article_length": state.get("article_length", ""),
                     "core_argument": flow.core_argument,
                     "sections": flow.sections,
                 },

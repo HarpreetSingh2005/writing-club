@@ -1,0 +1,16 @@
+{
+    "style_name": "reflective narrative",
+    "tone": "thoughtful",
+    "narrative_distance": "first-person",
+    "pacing": "medium",
+    "signature_rules": [
+        "Use personal anecdotes to illustrate broader themes.",
+        "Incorporate introspective moments that connect personal experiences to universal truths."
+    ],
+    "avoid": [
+        "Overly technical language or jargon that detracts from personal storytelling.",
+        "Neglecting emotional engagement with the audience."
+    ],
+    "length_guidance": "At 650 words, focus on compressing the narrative while maintaining depth in personal reflection and emotional resonance.",
+    "examples_seen": 1
+}

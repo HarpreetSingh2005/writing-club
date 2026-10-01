@@ -3,6 +3,7 @@ import json
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_openai import ChatOpenAI
 
+from config.env import Env
 from config.model_config import AVAILABLE_MODELS as MODELS, TASK_POLICY
 
 
@@ -37,6 +38,15 @@ MODEL_BUILDERS = {
         ) if api_key.startswith("sk-or-") else model.model,
         api_key=api_key,
         base_url="https://openrouter.ai/api/v1" if api_key.startswith("sk-or-") else None,
+        temperature=temperature,
+    ),
+
+    # Instantiates the local Ollama model via its OpenAI-compatible endpoint.
+    # Used only as the final fallback so the pipeline never stops on cloud API failures.
+    "ollama": lambda model, api_key, temperature: ChatOpenAI(
+        model=model.model,
+        api_key=api_key or "ollama",
+        base_url=f"{Env.OLLAMA_BASE_URL}/v1",
         temperature=temperature,
     ),
 

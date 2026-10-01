@@ -31,6 +31,9 @@ def article_writer(state: State):
 
     prompt = get_prompt(
         "article_writer",
+        user_idea=state.get("user_idea", ""),
+        article_length=state.get("article_length", ""),
+        transcript=state.get("transcript", ""),
         summary=state["summary"],
         flow=json.dumps(_jsonable(state["proposed_flow"]), ensure_ascii=False, indent=2),
         style_profile=json.dumps(state.get("style_profile", {}), ensure_ascii=False, indent=2),
@@ -48,7 +51,10 @@ def article_writer(state: State):
             log_entry(
                 "Article Writer", "✍️",
                 f"Drafted article ({len(draft.split())} words)",
-                {"preview": draft},
+                {
+                    "article_length": state.get("article_length", ""),
+                    "preview": draft,
+                },
             )
         ],
     }

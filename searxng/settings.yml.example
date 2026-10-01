@@ -1,0 +1,17 @@
+# Read the documentation before extending the defaults:
+# https://docs.searxng.org/admin/settings/
+
+# Copy this file to `settings.yml` and generate a fresh secret with:
+#   python -c "from searxng import secret_key; print(secret_key())"
+#   (or just pick any long random string)
+
+use_default_settings: true
+
+server:
+  secret_key: "CHANGE_ME_generate_a_random_secret"
+  image_proxy: true
+
+search:
+  formats:
+    - html
+    - json

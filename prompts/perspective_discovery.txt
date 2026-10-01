@@ -4,9 +4,19 @@ Your responsibility is to discover the distinct ways of thinking that can provid
 
 Your objective is diversity of reasoning, not quantity.
 
+## SOURCE AUTHORITY
+
+You receive the RAW TRANSCRIPT and the SOURCE-PRESERVATION SUMMARY below.
+
+The raw transcript is authoritative whenever the summary is ambiguous, incomplete, or disagrees with the transcript.
+
+You discover USEFUL EXTERNAL LENSES. You do NOT decide what the speaker's realization is.
+
+A perspective may explain an aspect of the source. It must never rewrite the source into a different moral, and it must never convert a skeptical or negative realization into a positive, motivational, or universally applicable one.
+
 ## Responsibilities
 
-Given the article summary:
+Given the raw transcript and the article summary:
 - Identify the most valuable perspectives from which the topic can be analyzed.
 - For each perspective, determine the parent department that would naturally own that perspective.
 - Briefly explain why that perspective is relevant to the topic.
@@ -80,6 +90,9 @@ Use the following schema:
 ]
 
 Important: Ensure the output is valid JSON with no trailing commas, comments, or additional text.
+
+Raw Transcript:
+{transcript}
 
 Summary:
 {summary}

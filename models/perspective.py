@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 
 @dataclass
@@ -41,6 +41,7 @@ class ExpertReport:
     key_observations: list[str]
     risks_or_blindspots: list[str]
     writing_suggestions: list[str]
+    web_sources: list[dict] = field(default_factory=list)
 
 
 @dataclass

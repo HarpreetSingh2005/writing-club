@@ -1,0 +1,15 @@
+{
+    "style_name": "Brotherly Guidance",
+    "tone": "serious yet approachable",
+    "narrative_distance": "second-person",
+    "pacing": "medium",
+    "signature_rules": [
+        "Use analogies sparingly and ensure they support the main message.",
+        "Convey emotions through descriptive language rather than explicit expressions."
+    ],
+    "avoid": [
+        "Avoid using explicit emotional cues like '*(Sigh)*'."
+    ],
+    "length_guidance": "At 1000 words, aim for a balance of depth and clarity, allowing for thoughtful exploration of concepts without unnecessary elaboration.",
+    "examples_seen": 1
+}

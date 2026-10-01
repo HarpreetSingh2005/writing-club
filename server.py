@@ -15,7 +15,7 @@ import uuid
 from dataclasses import asdict, is_dataclass
 from pathlib import Path
 
-from fastapi import FastAPI, File, Form, UploadFile
+from fastapi import FastAPI, File, Form, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
@@ -37,6 +37,10 @@ graph = build_graph()
 
 UPLOAD_DIR = Path("uploads")
 UPLOAD_DIR.mkdir(exist_ok=True)
+
+DEMO_TRANSCRIPT = """
+Okay so this is an article for the idea that why to care about people so this is the incidence where I was doing my exercise so normally I don't go to the gym current team but I wanted to exercise right so I started going to the ab public gym where all the old uncles and arteries come and the first It's really a not the top notch position you should work because it's really know that motivating so one day I was in this mode only like iron module to work rather than I was I really don't want to work there not go to Jim there because obviously that was not my perfect place now the equipments for the great know there were the motivation there were all the old uncles and our design no people know someone of age of my but then I was in the M okay yeah just give this and just talk to in this but at this at the same moment I servant girl so there was this when uncle came with this one a Harshit Harsh small child and she was on the wheelchair so she couldn't really work and observing her I realize that it's not about the uncle and aunty and no one was actually looking for like how is unknown was even even care about her so in the lamps nomenon daily give a shit about her and the point is that moment I saw like who am I showing this particular exercise two even is someone judges me like oh see like this guys but we were working with those artis and make me fun of me but what if in the future I don't work and for that reason my legs or my body stuff stop working out so at that moment these guys won't come to support me or to take care so why the hell should I even here to them even though I would probably shock is my the gym click way I work and how the environment is it's really the like the first environment you could ever go with like for the motivation and all that but the only thing is like these people even if they are making fun of you but when you if you stop working these people want even give a shit if you have really good or review working well a very not and even people don't even care thank you there they might be making fun for few minutes but after that day would forget that see you should just don't care and I just that is the basic idea about this
+""".strip()
 
 
 def _jsonable(obj):
@@ -76,11 +80,24 @@ def _config(thread_id: str) -> dict:
 # ─────────────────────────────────────────────
 @app.post("/api/start")
 async def start_workflow(
+    user_idea: str = Form(default=""),
+    requested_tone: str = Form(default=""),
+    article_length: str = Form(default=""),
     transcript: str = Form(default=""),
+    use_default: bool = Form(default=False),
     audio: UploadFile | None = File(default=None),
 ):
     thread_id = str(uuid.uuid4())
     audio_file_path = ""
+    user_idea = user_idea.strip()
+    article_length = article_length.strip()
+
+    # The requested_tone form field is accepted only for backward compatibility
+    # with older clients and is deliberately ignored: the article's tone is no
+    # longer a user-controlled writing requirement. It emerges from the source,
+    # the Author Skill, and the subject.
+    if not article_length.isdigit() or int(article_length) <= 0:
+        raise HTTPException(status_code=422, detail="Target word count must be a positive number.")
 
     # Save uploaded audio file
     if audio and audio.filename:
@@ -89,13 +106,23 @@ async def start_workflow(
             shutil.copyfileobj(audio.file, f)
         audio_file_path = str(dest.resolve())
 
+    source_material = transcript.strip() or user_idea
+    if use_default:
+        source_material = DEMO_TRANSCRIPT
+    if not source_material and not audio_file_path:
+        raise HTTPException(status_code=422, detail="Idea, transcript, audio, or demo material is required.")
+
     initial_state = {
+        "user_idea": user_idea or source_material,
+        "requested_tone": "",
+        "article_length": article_length,
         "audio_file_path": audio_file_path,
-        "transcript": transcript,
+        "transcript": source_material,
         "summary": "",
         "discovered_perspectives": [],
         "flow_approved": False,
         "user_feedback": "",
+        "final_review": {},
         "pipeline_log": [],
     }
 
@@ -134,7 +161,10 @@ async def get_status(thread_id: str):
         "pipeline_log": pipeline_log,
         "summary": values.get("summary", ""),
         "writing_style": values.get("writing_style", ""),
+        "requested_tone": values.get("requested_tone", ""),
+        "article_length": values.get("article_length", ""),
         "draft": values.get("draft", ""),
+        "final_review": values.get("final_review", {}),
         "flow_approved": values.get("flow_approved", False),
         "article_approved": values.get("article_approved", False),
         "awaiting_approval": awaiting_approval,
@@ -152,8 +182,13 @@ async def get_status(thread_id: str):
         if payload:
             if "draft" in payload:
                 response["draft"] = payload.get("draft", "")
+            if "review_packet_path" in payload:
+                response["review_packet_path"] = payload.get("review_packet_path", "")
             if "proposed_flow" in payload:
                 response["proposed_flow"] = _jsonable(payload.get("proposed_flow"))
+            if "requires_human_review" in payload:
+                response["requires_human_review"] = payload.get("requires_human_review", False)
+                response["auto_critic_status"] = payload.get("auto_critic_status", "")
 
     return response
 
@@ -227,12 +262,14 @@ def _build_response(thread_id: str, result: dict) -> dict:
         if "draft" in payload:
             response["draft"] = payload["draft"]
             response["question"] = payload.get("question", "Approve this draft?")
+            response["review_packet_path"] = payload.get("review_packet_path", "")
         else:
             response["proposed_flow"] = _jsonable(payload.get("proposed_flow"))
             response["question"] = payload.get("question", "Approve this flow?")
     else:
         response["awaiting_approval"] = False
         response["draft"] = values.get("draft", "")
+        response["final_review"] = values.get("final_review", {})
         response["article_approved"] = values.get("article_approved", False)
         response["flow_approved"] = values.get("flow_approved", False)
 

@@ -32,7 +32,9 @@ body {
 }
 
 button,
-textarea {
+textarea,
+input,
+select {
     font: inherit;
 }
 
@@ -113,6 +115,25 @@ button {
     background: var(--bg);
 }
 
+.material-tabs {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.supporting-material {
+    margin-top: 4px;
+}
+
+.supporting-material summary {
+    cursor: pointer;
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 750;
+}
+
+.supporting-material[open] summary {
+    margin-bottom: 12px;
+}
+
 .tab {
     border: 0;
     border-radius: 6px;
@@ -135,7 +156,9 @@ button {
     display: block;
 }
 
-textarea {
+textarea,
+input,
+select {
     width: 100%;
     border: 1px solid var(--border);
     border-radius: var(--radius);
@@ -147,13 +170,43 @@ textarea {
     font-size: 14px;
 }
 
-textarea:focus {
+textarea:focus,
+input:focus,
+select:focus {
     border-color: var(--accent);
     box-shadow: 0 0 0 3px rgba(46, 159, 130, 0.16);
 }
 
-textarea::placeholder {
+textarea::placeholder,
+input::placeholder {
     color: var(--quiet);
+}
+
+input,
+select {
+    min-height: 44px;
+}
+
+select {
+    cursor: pointer;
+}
+
+.brief-grid {
+    display: grid;
+    gap: 14px;
+    margin-bottom: 18px;
+}
+
+.meta-grid {
+    margin-top: 18px;
+}
+
+.field-label {
+    display: grid;
+    gap: 7px;
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 750;
 }
 
 .upload-zone {
@@ -167,6 +220,18 @@ textarea::placeholder {
     color: var(--muted);
     cursor: pointer;
     text-align: center;
+}
+
+.demo-note {
+    min-height: 118px;
+    display: grid;
+    place-items: center;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: #0d0f11;
+    color: var(--muted);
+    text-align: center;
+    padding: 18px;
 }
 
 .upload-zone:hover,
@@ -241,7 +306,9 @@ textarea::placeholder {
 
 .btn-primary:disabled,
 .btn-secondary:disabled,
-textarea:disabled {
+textarea:disabled,
+input:disabled,
+select:disabled {
     cursor: wait;
     opacity: 0.58;
 }

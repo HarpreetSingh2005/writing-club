@@ -15,6 +15,8 @@ from employees.editorial.flow_architect import flow_architect
 from employees.editorial.feedback_router import feedback_router
 from employees.editorial.article_writer import article_writer
 from employees.editorial.auto_critics import auto_flow_critic, auto_draft_critic
+from employees.editorial.draft_completeness import draft_completeness_check
+from employees.editorial.final_article_review import final_article_review
 from state import State
 from models.perspective import DiscoveredPerspective, ExpertReport, WritingFlow
 from utils.pipeline_logger import log_entry
@@ -36,6 +38,12 @@ def flow_approval(state: State):
         "question": "Approve this article flow?",
         "proposed_flow": _jsonable(state.get("proposed_flow")),
         "instructions": "Approve to continue drafting, or reject and provide feedback.",
+        "auto_critic_status": (
+            "rejected — human review required (max auto-revisions reached)"
+            if state.get("requires_human_review", False)
+            else "passed — auto-approved candidate"
+        ),
+        "requires_human_review": state.get("requires_human_review", False),
     })
 
     # Parse user decision (approved or rejected with optional feedback)
@@ -68,10 +76,29 @@ def article_approval(state: State):
     Interrupt node for the Editorial phase.
     Prompts the user to approve or request revisions for the final article draft.
     """
+    from utils.project_dumper import save_review_packet
+
+    review_packet_path = save_review_packet(state)
+
     decision = interrupt({
-        "question": "Approve this article draft?",
+        "question": "Approve this article draft? First check the saved draft/review packet, then tell me if the AI understood you correctly or what should change.",
         "draft": state.get("draft", ""),
-        "instructions": "Approve to finish, or reject and describe exactly what should change.",
+        "review_packet_path": review_packet_path,
+        "instructions": "Approve to finish, or reject and describe exactly what should change. Include whether the AI's understanding of your intent was right.",
+        "auto_critic_status": (
+            (
+                "⚠️ INCOMPLETE DRAFT — flagged as truncated: "
+                + state.get("incomplete_draft_reason", "unknown reason")
+                + ". Approving means approving an incomplete article."
+            )
+            if state.get("incomplete_draft_reason")
+            else (
+                "rejected — human review required (max auto-revisions reached); approving means overriding the critic"
+                if state.get("requires_human_review", False)
+                else "passed — auto-approved candidate"
+            )
+        ),
+        "requires_human_review": state.get("requires_human_review", False),
     })
 
     # Parse user decision
@@ -118,7 +145,7 @@ def route_after_feedback(state: State):
     route = state.get("feedback_route", "revise_flow")
 
     if route == "complete":
-        return END
+        return "final article review"
     if route in {"draft", "revise_draft"}:
         return "article writer"
     if route == "revise_style":
@@ -148,6 +175,20 @@ def route_auto_draft(state: State):
     return state.get("next_action", "article_approval")
 
 
+def route_draft_completeness(state: State):
+    """
+    Routes after the Draft Completeness Check.
+    - 'draft_truncated_retry'  → regenerate the draft at 'article writer' (does
+      NOT consume an auto-revision).
+    - otherwise the node's next_action points at the next node
+      ('auto draft critic', or 'article approval' after retries are exhausted).
+    """
+    next_action = state.get("next_action", "auto draft critic")
+    if next_action == "draft_truncated_retry":
+        return "article writer"
+    return next_action
+
+
 def build_graph():
     """
     Compiles the state graph for the Writing Club workflow.
@@ -169,8 +210,10 @@ def build_graph():
     builder.add_node("flow approval", flow_approval)
     builder.add_node("feedback router", feedback_router)
     builder.add_node("article writer", article_writer)
+    builder.add_node("draft completeness check", draft_completeness_check)
     builder.add_node("auto draft critic", auto_draft_critic)
     builder.add_node("article approval", article_approval)
+    builder.add_node("final article review", final_article_review)
 
     # 2. Define conditional start edge
     builder.add_conditional_edges(START, route_start)
@@ -190,9 +233,11 @@ def build_graph():
     builder.add_edge("flow approval", "feedback router")
     builder.add_conditional_edges("feedback router", route_after_feedback)
     
-    builder.add_edge("article writer", "auto draft critic")
+    builder.add_edge("article writer", "draft completeness check")
+    builder.add_conditional_edges("draft completeness check", route_draft_completeness)
     builder.add_conditional_edges("auto draft critic", route_auto_draft)
     builder.add_edge("article approval", "feedback router")
+    builder.add_edge("final article review", END)
 
     # 5. Compile graph with memory saver to support interrupts and resuming state
     serde = JsonPlusSerializer(allowed_msgpack_modules=[
@@ -203,4 +248,3 @@ def build_graph():
     graph = builder.compile(checkpointer=MemorySaver(serde=serde))
 
     return graph
-

@@ -1,90 +1,67 @@
-# Writing Club Organization
+# 🏛️ Writing Club Organization
 
-Version: 0.2
-Status: Planning
-
----
-
-# Philosophy
-
-Writing Club is not a collection of AI agents.
-
-It is an AI organization.
-
-Every employee has a single responsibility, communicates through the shared company workspace (State), and focuses on doing one job exceptionally well.
-
-Employees never directly communicate with each other.
-They only read from and write to the company workspace.
+**Version:** 2.0  
+**Status:** Production (Active LangGraph multi-agent pipeline)
 
 ---
 
-# Organization Structure
+## 💡 Organizational Philosophy
 
-CEO
+Writing Club is not a loose collection of ad-hoc prompt templates. It is a highly structured, state-driven AI organization. 
+
+Every employee (node) has a single, tightly defined responsibility and communicates exclusively by writing to and reading from the shared company workspace (`State`). Direct inter-agent communication is forbidden, preventing chaotic dependency chains and making the pipeline highly maintainable, testable, and robust.
+
+---
+
+## 🏢 Department & Team Structure
+
+```text
+Writing Club Board
 │
-├── Intake Team
-│ ├── Input Receiver
-│ ├── Summarizer
-│ └── Context Extractor
+├── 🎙️ Intake Department
+│   ├── Transcriber (Speech-to-Text)
+│   └── Summarizer (Transcript cleaner & Grammar check)
 │
-├── Planning Team
-│ ├── Perspective Discovery Specialist
-│ ├── Perspective Matcher
-│ ├── Perspective Ranker
-│ ├── Perspective Librarian
-│ └── Hiring Manager
+├── 🗺️ Planning & Library Department
+│   ├── Perspective Discovery Specialist
+│   ├── Department Librarian (Persistent domain knowledge manager)
+│   └── Writing Style Librarian (Style profile and voice adaptation)
 │
-├── Research Team
-│ └── Dynamic Expert Employees
+├── 🧪 Research Department
+│   └── Expert Researchers (Domain-specific analysts)
 │
-└── Editorial Team
-├── CEO
-├── Reviewer (Future)
-└── Publisher (Future)
+└── 📰 Editorial & Quality Assurance Department
+    ├── Insight Curator (Fact aggregator)
+    ├── Flow Architect (Outline designer)
+    ├── Auto Flow Critic (Outline verification)
+    ├── Flow Approval (Human-in-the-loop interrupt)
+    ├── Feedback Router (Intelligent stage coordinator)
+    ├── Article Writer (Prose composition)
+    ├── Auto Draft Critic (AI trope scanner & quality check)
+    ├── Article Approval (Human-in-the-loop interrupt)
+    └── Final Reviewer (Post-production analytics)
+```
 
 ---
 
-# Team Responsibilities
+## 🎯 Team Responsibilities
 
-## Intake Team
+### 1. Intake Department
+*   **Mission:** Understand and extract exactly what the author wants to express.
+*   **Focus:** Removing audio noise, grammatical errors, and filler words without adding external opinions.
+*   **Outputs:** Structured `summary` and `transcript`.
 
-Understand what the user wants.
+### 2. Planning & Library Department
+*   **Mission:** Set the strategy, intellectual scope, and voice constraints of the article.
+*   **Focus:** Identifying multidisciplinary angles, updating the persistent domain knowledge base, and adapting/saving style patterns across runs.
+*   **Outputs:** Relevant department lists, `writing_style`, and `style_profile`.
 
-Produces:
+### 3. Research Department
+*   **Mission:** Gather analytical evidence, explore edge cases, and highlight risks.
+*   **Focus:** Providing deep academic or domain insight based on the specific perspectives.
+*   **Outputs:** Detailed `research_reports`.
 
-- Summary
-- Keywords
-- Entities
-- Goal
-
----
-
-## Planning Team
-
-Determine HOW the article should be analyzed.
-
-Produces:
-
-- Relevant perspectives
-- Ranked perspectives
-- Dynamic experts
-
----
-
-## Research Team
-
-Research from their assigned perspective.
-
-Produces:
-
-- Independent research reports
-
----
-
-## Editorial Team
-
-Merge all reports into one coherent article.
-
-Produces:
-
-- Final article
+### 4. Editorial & Quality Assurance Department
+*   **Mission:** Draft, verify, revise, and sign off on the final article.
+*   **Focus:** Synthesizing research, defining section-by-section outline structures, correcting generic AI clichés, routing feedback, and archiving project data.
+*   **Outputs:** `proposed_flow`, `draft`, `final_review` notes, and complete project dump logs.

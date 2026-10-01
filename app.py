@@ -43,6 +43,9 @@ def print_review(payload: dict) -> None:
         print("  📐 PROPOSED FLOW FOR APPROVAL")
         print("=" * 60)
         print(json.dumps(payload.get("proposed_flow", payload), indent=4, default=str))
+    if payload.get("requires_human_review"):
+        print("\n⚠️  REQUIRES HUMAN REVIEW: the automatic critic rejected this after max revisions.")
+        print("    Approving means explicitly overriding the critic (HUMAN-OVERRIDDEN).")
     print("\n❓ Question:", payload.get("question", "Approve this?"))
 
 
@@ -56,31 +59,50 @@ def ask_for_decision() -> dict:
     }
 
 
-def resolve_input() -> dict:
-    """Determine input: audio file (CLI arg or prompt) or hardcoded transcript."""
-    # Check for CLI argument: python app.py path/to/audio.mp3
-    if len(sys.argv) > 1:
-        audio_path = sys.argv[1]
-        p = Path(audio_path)
-        if p.exists() and p.suffix.lower() in {".mp3", ".wav", ".m4a", ".ogg", ".flac", ".aac", ".webm", ".mp4"}:
-            print(f"🎤 Audio file detected: {p.name}")
-            return {"audio_file_path": str(p.resolve()), "transcript": ""}
-        else:
-            print(f"⚠️  File not found or unsupported format: {audio_path}")
-            print("   Falling back to built-in transcript.\n")
+def ask_for_length() -> str:
+    """Collect only the target word count. Tone is not user-controlled: the article's
+    tone emerges from the source material, the Author Skill, and the subject."""
+    article_length = input("Target word count: ").strip()
+    while not article_length.isdigit() or int(article_length) <= 0:
+        print("Please enter a number of words, for example 800.")
+        article_length = input("Target word count: ").strip()
 
-    # Interactive prompt
+    return article_length
+
+
+def ask_for_brief() -> dict:
+    """Collect source material and target length. No user-selected tone: the tone
+    should emerge naturally from the source, the Author Skill, and the subject."""
     print("╔══════════════════════════════════════════╗")
-    print("║       🖊️  Writing Club — Input Mode       ║")
-    print("╠══════════════════════════════════════════╣")
-    print("║  1. Paste a text transcript              ║")
-    print("║  2. Provide an audio file path           ║")
-    print("║  3. Use the built-in demo transcript     ║")
+    print("║       🖊️  Writing Club — Article Brief    ║")
     print("╚══════════════════════════════════════════╝")
-    choice = input("\nChoice [1/2/3]: ").strip()
 
-    if choice == "1":
-        print("Paste your transcript below (press Enter twice to finish):\n")
+    print("\nSource material:")
+    print("  1. Write or paste your own idea/transcript")
+    print("  2. Provide an audio file path")
+    print("  3. Use the built-in demo transcript")
+    choice = input("Choice [1/2/3]: ").strip()
+
+    transcript = ""
+    audio_file_path = ""
+
+    if choice == "2":
+        audio_path = input("Audio file path: ").strip().strip('"').strip("'")
+        p = Path(audio_path)
+        if p.exists():
+            print(f"🎤 Audio file: {p.name}")
+            audio_file_path = str(p.resolve())
+        else:
+            print(f"⚠️  File not found: {audio_path}")
+            print("   Falling back to text input.\n")
+            choice = "1"
+
+    if choice == "3":
+        print("📝 Using built-in demo transcript.\n")
+        transcript = TRANSCRIPT
+
+    if choice not in {"2", "3"}:
+        print("Paste your idea, rough notes, or transcript below (press Enter twice to finish):\n")
         lines = []
         while True:
             line = input()
@@ -91,21 +113,42 @@ def resolve_input() -> dict:
             else:
                 lines.append(line)
         transcript = "\n".join(lines).strip()
-        if transcript:
-            return {"audio_file_path": "", "transcript": transcript}
-        print("Empty input — falling back to demo transcript.\n")
+        while not transcript:
+            print("Please add the raw idea, notes, or transcript. The team needs source material.")
+            transcript = input("Idea or transcript: ").strip()
 
-    elif choice == "2":
-        audio_path = input("Audio file path: ").strip().strip('"').strip("'")
+    article_length = ask_for_length()
+
+    return {
+        "user_idea": transcript,
+        "requested_tone": "",
+        "article_length": article_length,
+        "audio_file_path": audio_file_path,
+        "transcript": transcript,
+    }
+
+
+def resolve_input() -> dict:
+    """Determine source material: text/transcript, audio file, or demo transcript."""
+    # Check for CLI argument: python app.py path/to/audio.mp3
+    if len(sys.argv) > 1:
+        audio_path = sys.argv[1]
         p = Path(audio_path)
-        if p.exists():
-            print(f"🎤 Audio file: {p.name}")
-            return {"audio_file_path": str(p.resolve()), "transcript": ""}
-        print(f"⚠️  File not found: {audio_path}")
-        print("   Falling back to demo transcript.\n")
+        if p.exists() and p.suffix.lower() in {".mp3", ".wav", ".m4a", ".ogg", ".flac", ".aac", ".webm", ".mp4"}:
+            print(f"🎤 Audio file detected: {p.name}")
+            article_length = ask_for_length()
+            return {
+                "user_idea": "",
+                "requested_tone": "",
+                "article_length": article_length,
+                "audio_file_path": str(p.resolve()),
+                "transcript": "",
+            }
+        else:
+            print(f"⚠️  File not found or unsupported format: {audio_path}")
+            print("   Falling back to normal input.\n")
 
-    print("📝 Using built-in demo transcript.\n")
-    return {"audio_file_path": "", "transcript": TRANSCRIPT}
+    return ask_for_brief()
 
 
 def main():
@@ -115,12 +158,16 @@ def main():
     user_input = resolve_input()
 
     initial_state = {
+        "user_idea": user_input.get("user_idea", ""),
+        "requested_tone": user_input.get("requested_tone", ""),
+        "article_length": user_input.get("article_length", ""),
         "audio_file_path": user_input.get("audio_file_path", ""),
-        "transcript": user_input.get("transcript", ""),
+        "transcript": user_input.get("transcript", "") or user_input.get("user_idea", ""),
         "summary": "",
         "discovered_perspectives": [],
         "flow_approved": False,
         "user_feedback": "",
+        "final_review": {},
         "auto_revision_count": 0,
         "pipeline_log": [],
     }
@@ -147,7 +194,7 @@ def main():
             print("=" * 60)
             print(result["draft"])
 
-            # Dump all project details (summary, transcript, perspectives, logs) to a file named after the article
+            # Archive all project details (summary, transcript, perspectives, logs) to a file named after the article
             from utils.project_dumper import save_project_dump
             save_project_dump(result)
             return

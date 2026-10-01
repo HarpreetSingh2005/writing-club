@@ -1,0 +1,17 @@
+{
+    "style_name": "Explaining Life's Ups and Downs",
+    "tone": "serious and straightforward",
+    "narrative_distance": "third-person",
+    "pacing": "medium",
+    "signature_rules": [
+        "Use analogies sparingly and focus on clarity.",
+        "Maintain a serious tone while explaining concepts.",
+        "Incorporate moments of reflection without emotional expressions."
+    ],
+    "avoid": [
+        "Direct personal address to the reader.",
+        "Overly emotional expressions or casual language."
+    ],
+    "length_guidance": "Aim for depth and clarity in explanations, ensuring that the content is comprehensive yet concise, fitting within the 1000-word target.",
+    "examples_seen": 1
+}

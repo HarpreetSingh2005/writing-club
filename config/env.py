@@ -49,6 +49,26 @@ class Env:
     if not NVIDIA_API_KEYS and os.getenv("NVIDIA_API_KEY"):
         NVIDIA_API_KEYS = [os.getenv("NVIDIA_API_KEY").strip()]
 
+    # ----------------- Ollama (Local LLM Fallback) -----------------
+    # Base URL of the local Ollama server.
+    OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL") or "http://localhost:11434"
+
+    # Local model to use as the last-resort fallback.
+    OLLAMA_MODEL = os.getenv("OLLAMA_MODEL") or "llama3.2"
+
+    # Whether the Ollama fallback is enabled. Defaults to enabled.
+    OLLAMA_ENABLED = (os.getenv("OLLAMA_ENABLED") or "true").strip().lower() in ("1", "true", "yes")
+
+    # ----------------- SearXNG (Web Research Tool) -----------------
+    # Local SearXNG instance URL. Leave unset to disable web research.
+    SEARXNG_URL = os.getenv("SEARXNG_URL") or "http://localhost:8080"
+
+    # Per-request timeout in seconds for SearXNG queries.
+    SEARXNG_TIMEOUT = float(os.getenv("SEARXNG_TIMEOUT") or 10.0)
+
+    # Whether web research is enabled. True only if the user configured SEARXNG_URL.
+    SEARXNG_ENABLED = (os.getenv("SEARXNG_URL") or "").strip() != ""
+
     # ----------------- OpenAI API Keys -----------------
     OPENAI_API_KEYS = []
 

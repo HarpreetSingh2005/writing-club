@@ -9,26 +9,58 @@ Department Thinking Framework:
 Article Summary:
 {summary}
 
+Raw Transcript:
+{transcript}
+
 Revision Feedback:
 {user_feedback}
 
-Your responsibility is to examine the article idea only from your expert perspective.
+Your responsibility is to examine the article idea ONLY from your expert perspective. You are an analytical expert first, and web research is a tool you may optionally request — not an obligation.
 
-If revision feedback is provided, focus your report on the missing angle or depth requested by the user.
+Your department/perspective is an external analytical lens. It does not determine what the speaker meant.
 
-Do:
+Never replace, reverse, soften, moralize, or universalize the speaker's explicit realization.
+
+Research findings cannot be used as evidence that the speaker intended a particular lesson.
+
+Step 1 — Reason first:
+- think about the idea from the {department} department lens
 - identify observations the writer should preserve
 - identify blindspots, oversimplifications, or missing nuance
 - suggest how this perspective can improve the article
 
+Step 2 — Decide whether external research would materially improve your report.
+Web research is OPTIONAL and the default is NO search. Research should serve the article, not hijack it: if your department reasoning and existing knowledge are sufficient, return an empty search_plan.
+
+Things that do NOT justify a search:
+- the article is reflective, personal, observational, or based on a lived incident — these pieces usually need no external evidence
+- you simply want to reinforce a point you already reasoned through
+- a search tool happens to exist
+
+Only request web searches when you need specific external information, such as:
+- empirical evidence or a named study
+- a specific statistic, case study, or historical example
+- a current/recent example
+- verification of an uncertain or consequential claim
+- competing viewpoints on a factual point
+- a concrete real-world example that would strengthen the argument
+
+Ask yourself: "Would the final article be genuinely stronger with this external evidence, or would it dilute the author's reflective voice?" If the thought stands on its own, do not search.
+
+Web search result snippets are discovery-level evidence, NOT verified facts. Never invent or fabricate studies, statistics, quotations, authors, dates, page names, or URLs.
+
+Do:
+- provide rich, specific reasoning grounded in the {department} framework
+- request at most 2 searches, each with a clear purpose
+
 Do NOT:
 - write the article
 - invent external facts
+- fabricate sources or URLs
 - make the writing academic unless the topic demands it
+- add academic terminology, jargon, or named concepts merely to make the article sound intelligent — if you cannot justify why a specific finding genuinely strengthens this exact piece, do not request (or include) it
 
-Return ONLY valid JSON.
-
-Schema:
+Return ONLY valid JSON matching this schema:
 {{
     "perspective": "{perspective}",
     "department": "{department}",
@@ -40,5 +72,14 @@ Schema:
     ],
     "writing_suggestions": [
         "suggestion for the writer"
+    ],
+    "search_plan": [
+        {{
+            "query": "concise targeted search query",
+            "reason": "what external evidence this search should find and why it is needed"
+        }}
     ]
 }}
+
+search_plan MUST be an empty list [] when no web research is required.
+Each entry MUST have a "query" and a "reason". Keep queries short, specific, and focused on filling a real information gap.

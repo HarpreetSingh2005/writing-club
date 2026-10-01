@@ -1,0 +1,17 @@
+{
+    "style_name": "Self-Reflective Humor",
+    "tone": "raw, funny, and warm with a hint of seriousness",
+    "narrative_distance": "first-person",
+    "pacing": "medium",
+    "signature_rules": [
+        "Use humor to introduce serious topics.",
+        "Incorporate personal anecdotes to illustrate points.",
+        "Maintain a conversational tone throughout."
+    ],
+    "avoid": [
+        "Overly dramatic language or dark themes.",
+        "Technical jargon that may alienate the reader."
+    ],
+    "length_guidance": "Aim for a detailed exploration of thoughts and experiences, allowing for depth and reflection while keeping the pacing engaging for a 1000-word count.",
+    "examples_seen": 1
+}
