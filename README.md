@@ -10,6 +10,51 @@ Instead of generating an article in a single LLM prompt, the project routes inpu
 
 ---
 
+## 💡 The Idea
+
+The usual LangGraph examples model agents as **generic workers** — a researcher, a writer, a reviewer — where the interesting part is the orchestration plumbing.
+
+This project asks a different question: **what if the agents weren't just "agents"?** What if each one represented a *person* in a real organization — a department, a role with its own area of expertise, standard, and accountability?
+
+So instead of one model solving everything, Writing Club is built as a **small organization**: every part has a narrow responsibility, hands its work to a peer, and can be sent back.
+
+That question then leads to a harder one. If an AI system is meant to sound like a specific human, **how do you stop it from faking that human's mannerisms?**
+
+An AI given a handful of stylistic rules will cheerfully produce polished prose wearing your signature moves — the CAPS, the rhetorical questions, the Hinglish, the rhetorical callback. It reads *like* you and thinks like nobody.
+
+Writing Club's answer is the **Author Skill** and the Draft Critic's hard question:
+
+> "Does this draft appear to reproduce the author's way of thinking, or is it assembling recognizable author-style tricks?"
+
+Everything else in the architecture exists to answer that question honestly.
+
+---
+
+## ⚠️ What I Removed, and Why
+
+Worth stating plainly, because it's the most useful lesson from the project.
+
+I built a **self-improvement layer**: agents that inspect their own architecture, detect repeated failure patterns at a stage, and suggest a bug might live there. It worked, sort of — and it turned into more loops, more states, more interactions, for no measurable gain in output quality.
+
+**More complexity does not automatically mean more intelligence.**
+
+So that layer was removed. What remains is *bounded* correction — critics can reject a peer's output and route it back, but nothing is allowed to rewrite its own prompts, code, graph, or state. See [Current-Run Correction vs. System Self-Improvement](#-current-run-correction-vs-system-self-improvement) for exactly what the system still does.
+
+```text
+Current-run correction:   KEEP   (critic rejects → routes back to the owning department)
+System self-improvement:  OFF    (no prompt / code / graph / state mutation)
+```
+
+---
+
+## 🔍 When It Needs to Know Something It Doesn't
+
+Reasoning from what the model already knows has a ceiling. When a department genuinely needs external evidence, researchers can optionally consult a local **SearXNG** instance (see [Optional Web Research](#-optional-web-research-searxng-tool)).
+
+Search is a **tool, not an employee or a graph node**. A researcher reasons from its department perspective first and only requests searches when external information would materially change the report. An empty search plan means no web research happens at all. If SearXNG is unavailable or misconfigured, the pipeline continues with purely analytical research — it is never a hard dependency.
+
+---
+
 ## 🏛️ System Architecture & Workflow
 
 Writing Club is built on a modular state graph. The entire workflow consists of **15 distinct steps** organized into five core phases: **Intake**, **Planning**, **Research**, **Editorial**, and **Verification**.
@@ -115,11 +160,6 @@ This **current-run correction is intentionally kept**.
 
 Writing Club does **not** perform system-level self-improvement. It does not automatically modify its own prompts, code, graph architecture, State schema, department definitions, or future run behavior based on article feedback.
 
-```text
-Current-run correction:   KEEP
-System self-improvement:  REMOVED
-```
-
 ---
 
 ## 🗂️ Step-by-Step Employee Nodes (How Each Step Works)
@@ -145,8 +185,16 @@ System self-improvement:  REMOVED
 *   **How it works:** It groups discovered perspectives by department. If a department JSON does not exist in the library, it generates a description and schema metadata via an LLM. It then registers new sub-departments (or perspectives) to compile a growing index of intellectual angles.
 
 #### 5. Style Librarian (`style librarian`)
-*   **What it does:** Establishes and updates the author's writing style profile (`library room/writing styles/*.json`).
-*   **How it works:** It matches the current text against a specific writing style (e.g., *reflective personal narrative*). It identifies rules for tone, pacing, narrative distance, and lists specific signature rules (things to do) and warnings (things to avoid), merging them into a persistent file across runs to ensure the AI adapts to the author's style over time.
+*   **What it does:** Builds the writing identity the Writer and both critics actually judge against.
+*   **How it works:** It combines two things:
+    1. **The Author Skill** (`library room/author_skill.md`) — a hand-authored, stable document describing the author's *decision-making*, not a template. It's organized into three tiers: **Tier 1** identity and thought process (dominant), **Tier 2** frequent writing behaviors, **Tier 3** optional stylistic tools that must never be treated as requirements.
+    2. **The dynamic style profile** (`library room/writing styles/*.json`) — detected per article, merged persistently across runs so the model converges on the author's voice over time.
+
+    An `author_skill_selector` step then selects which tendencies from the stable Author Skill apply to *this* article, producing a dynamic `author_skill` block that rides along in the State for the Writer and both Critics.
+
+> **Why the tiers matter.** This is the project's central idea in practice: reproduce the author's *way of developing ideas* (notice → question → disrupt → reframe → explain), not his recognizable surface tricks (CAPS, Hinglish, rhetorical questions, gaming references). A draft that crams in Tier 3 devices without the Tier 1 reasoning behind them is a failure, not a success.
+
+> **Tone is not a user input.** It used to be. It now emerges from the source material + the Author Skill + the subject. `requested_tone` survives in `State` only for backward compatibility, and the CLI no longer prompts for it.
 
 ---
 
@@ -164,7 +212,7 @@ System self-improvement:  REMOVED
 
 #### 8. Flow Architect (`flow architect`)
 *   **What it does:** Proposes a structured outline (flow) for the article.
-*   **How it works:** Using the curated insights and the style profile, it creates an outline containing a suggested title direction, tone, core argument, section-by-section breakdown, and an approval question for the user.
+*   **How it works:** Using the curated insights and the Author Skill + style profile, it creates an outline containing a suggested title direction, tone, core argument, section-by-section breakdown, and an approval question for the user.
 
 ---
 
@@ -185,11 +233,42 @@ System self-improvement:  REMOVED
 
 #### 12. Article Writer (`article writer`)
 *   **What it does:** Composes the full article draft.
-*   **How it works:** Using the approved outline, the intake summary, expert reports, curated insights, and the target style profile, it writes the entire prose piece.
+*   **How it works:** Using the approved outline, the raw transcript, the intake summary, expert reports, curated insights, and the Author Skill + style profile, it writes the entire prose piece against the target word count. It writes *from* the source reasoning rather than assembling recognisable style tricks — that distinction is what the Draft Critic exists to police.
 
 #### 13. Auto Draft Critic (`auto draft critic`)
-*   **What it does:** Performs an automated quality check on the written draft.
-*   **How it works:** It scans the draft for generic AI tropes (e.g., "in conclusion", "it's crucial to note", "tapestry of life"), sentence monotony, cliches, and tone compliance. If it fails, it sends it back to the *Article Writer* with correction instructions (capped at 2 auto-revisions).
+*   **What it does:** Judges whether the draft is genuinely the author's thinking, and whether it is *true to the source*. This is the strictest node in the graph.
+*   **Primary question:**
+    > "Does this draft appear to reproduce the author's way of thinking, or is it assembling recognizable author-style tricks?"
+
+*   **How it works:** It runs four families of checks, all against the **raw transcript** rather than the summary:
+
+  **a) Source traceability — hallucination detection.** The raw transcript is the ultimate authority (the summary is only a preservation aid). Every concrete scene, detail, emotional state, reaction, or claim is classified as:
+  1. `SOURCE-SUPPORTED`
+  2. `REASONABLE AUTHORIAL EXPANSION` (develops the reasoning without adding a new factual claim)
+  3. `UNSUPPORTED INVENTION` — **hard rejection, no matter how polished the prose is.**
+
+  The critic is explicitly forbidden from *asking for* invented sensory detail to make the draft more vivid. Plausibility is not a defence: "probably true" is still fabrication.
+
+  **b) Author-voice match.** Nine named failure modes are checked explicitly:
+  | | Failure mode |
+  |---|---|
+  | **A** | Style-trick imitation — devices inserted because they appear in the Author Skill, without the reasoning that would justify them |
+  | **B** | Polished AI conversational voice — generic phrasing, perfectly rounded transitions, evenly paced sentences |
+  | **C** | Over-explanation — explaining a realization multiple times instead of letting it land |
+  | **D** | Manufactured humor — jokes inserted because humor seems expected |
+  | **E** | Sophisticated vocabulary dressing up a simple thought |
+  | **F** | Source fabrication |
+  | **G** | Motivational wrap-up instead of a natural landing point |
+  | **H** | Tone performance — visibly alternating between "funny" and "serious" |
+  | **I** | Generic inspirational transformation — replacing a specific realization with a safer universal lesson |
+
+  **c) Craft and tone.** Transition tropes and clichés ("In conclusion", "It's crucial to note", "A testament to"), monotone sentence pacing, unearned analogies, preachy advice, performed tone, idea drift, paragraph flow, and length fit against the target word count.
+
+  **d) Two verdicts it is expected to issue:**
+  - *"Technically good, but does not feel like the author."* — clean prose, wrong reasoning and reader relationship.
+  - *"The draft is over-performing the author's surface quirks."* — signatures crammed in without the underlying thinking.
+
+*   **Rejection threshold:** any human-likeness rating below **8.5**, or any failure of the above, sets `approved: false`. Failures route back to the *Article Writer* with concrete replacement instructions (capped at 2 auto-revisions, then it escalates to a human explicitly flagged as `requires_human_review`).
 
 #### 14. Article Approval (`article approval`) — *Human Interrupt*
 *   **What it does:** Pauses the graph to seek user approval for the final draft.
@@ -203,20 +282,28 @@ System self-improvement:  REMOVED
 
 ## 💾 Project Dumper & Outputs
 
-Once the final draft is approved, the system generates a detailed archive file inside the `/articles` folder:
-- **Article Text & Structure:** Full title, core argument, and sections.
-- **Style Profiles:** Saved tone, narrative distance, signature rules, and avoidances.
-- **Expert Reports:** Complete academic observation notes, risks, and blind spots.
-- **Activity Logs:** Time-stamped logs of every agent action and rating score (e.g., `🤖 [Auto Flow Critic] Rated outline: 9.2/10`).
+Once the final draft is approved, the system writes two packets into a per-article folder under `/articles`:
+
+**Before approval** (`save_review_packet`):
+- `draft_for_review.txt` — the draft awaiting your decision
+- `review_context_report.txt` — the context needed to judge it
+
+**After approval** (`save_project_dump`):
+- `article.txt` — the final article
+- `improvement_report.txt` — what the Final Review recorded
+- `project_log.txt` — time-stamped log of every agent action and rating score (e.g. `🤖 [Auto Flow Critic] Rated outline: 9.2/10`)
+
+Style profiles and expert reports are carried across runs in the persistent Library Room rather than duplicated into every archive.
 
 ---
 
 ## 🔌 API Key switching & Task Routing
 
 The system includes a resilient model configurator (`config/model_config.py`) that matches specific models to specific tasks:
-- **Intake/Summarization/Critique:** Routed to faster, cost-effective models (e.g., Gemini `gemini-3.6-flash`).
-- **Research/Critique Fallback:** Routed to larger reasoning models (e.g., Nvidia-hosted `Llama 3.3-70B`).
-- **Flow & Drafting:** Routed to models with high-quality prose capabilities (e.g., OpenAI `gpt-5.6-terra` / `gpt-4o`).
+- **Intake / Summarization / Discovery / Auto-critique:** Routed to faster, cost-effective models (Gemini `gemini-3.6-flash`).
+- **Research / Critique / Drafting / Style learning:** Routed to higher-quality prose and reasoning models (OpenAI `gpt-5.6-terra`, `gpt-5.6-luna`).
+- **Research fallback:** NVIDIA-hosted `meta/llama-3.3-70b-instruct`.
+- **Last resort:** local Ollama (see below).
 
 ### API Key Fallback Formats
 You can configure fallback keys in your `.env` file in two ways:
@@ -325,22 +412,63 @@ If you'd rather run fully local, set `OLLAMA_ENABLED=true` and pull a model (`ol
 uv run app.py
 ```
 
-The app is fully interactive. Paste or type your idea, and the pipeline runs phase by phase, printing every agent's action as it happens. It will stop and ask for your approval twice:
-1. **Flow Approval** — review the proposed outline, tone, and core argument.
+You'll be asked for source material and a target word count:
+
+```text
+Source material:
+  1. Write or paste your own idea/transcript
+  2. Provide an audio file path
+  3. Use the built-in demo transcript
+Choice [1/2/3]:
+```
+
+- **1** — type or paste your idea, rough notes, or a transcript (press Enter twice to finish)
+- **2** — point at an audio file and let the Transcriber handle it
+- **3** — run the built-in demo transcript to see the whole pipeline work without writing anything
+
+Then enter your target word count (e.g. `800`). **There is no tone prompt** — tone is derived from your source material, the Author Skill, and the subject.
+
+The pipeline runs phase by phase, printing every agent's action as it happens, and stops twice for your approval:
+
+1. **Flow Approval** — review the proposed title, tone, core argument, and section breakdown.
 2. **Article Approval** — review the finished draft.
 
-Reply `y` to approve, or reject with feedback describing what should change. Feedback gets routed back to whichever department is responsible.
+Reply `y` to approve, or reject with feedback describing what should change. Feedback gets routed back to whichever department is responsible — style, research, structure, or the draft itself.
 
-Start from a voice memo instead of typing:
+> If a critic rejects something after exhausting its auto-revisions, the prompt is explicitly flagged `⚠️ REQUIRES HUMAN REVIEW`. Approving at that point is recorded as a human override, not a pass.
+
+Start from a voice memo directly:
 ```bash
 uv run app.py uploads/my_voice_memo.mp3
 ```
+
+Supported audio/video extensions: `.mp3 .wav .m4a .ogg .flac .aac .webm .mp4`
 
 ### Running as an HTTP API (optional)
 ```bash
 uv run server.py       # serves on http://localhost:8000
 ```
-This is a **headless JSON API** — there is no web interface attached. See `server.py` for the available endpoints.
+This is a **headless JSON API** — there is no web interface attached, so `http://localhost:8000/` itself will 404. Use the endpoints directly:
+
+| Method | Endpoint | Purpose |
+|---|---|---|
+| `POST` | `/api/start` | Upload audio or text, start the workflow |
+| `GET` | `/api/status/{id}` | Current state and pipeline log |
+| `POST` | `/api/approve/{id}` | Approve/reject with feedback |
+| `GET` | `/api/result/{id}` | The final draft |
 
 ### Where output goes
-Approved articles and full review packets are written to `/articles`. The `articles/` directory contains generated run folders (`project_log.txt`, `review_context_report.txt`, `draft_for_review.txt`) which are gitignored; a few sample articles are kept at the top level.
+Approved articles and full review packets are written to `/articles`. Each run gets a folder containing `article.txt`, `project_log.txt`, `review_context_report.txt`, and `improvement_report.txt`. Those run folders are gitignored; a few sample articles are kept at the top level.
+
+---
+
+## 🔁 Pipeline Limits
+
+Two independent retry budgets, so one can't starve the other:
+
+| Guard | Value | Purpose |
+|---|---|---|
+| `MAX_AUTO_REVISIONS` | `2` | Critic rejections per article, before escalating to a human |
+| `MAX_TRUNCATION_RETRIES` | `1` | Draft Completeness Check regenerations — does **not** consume an auto-revision, because a truncated generation is a failure, not a bad draft |
+
+After the caps are hit, the draft still reaches the approval prompt — but flagged, never silently passed.

@@ -80,7 +80,7 @@ graph TD
 Converts a voice memo to text (local Whisper → Gemini multimodal → OpenAI fallback), then compresses it into a clean summary. Strictly forbidden from introducing new ideas — it only cleans.
 
 **Planning** — *Perspective Discovery, Department Librarian, Style Librarian*
-Discovers 2–3 relevant academic angles; registers new departments into the persistent Library Room; and builds a **voice profile** (tone, pacing, narrative distance, signature moves, and things to avoid) that merges across runs so the AI converges on my actual voice instead of generic "assistant" prose.
+Discovers 2–3 relevant academic angles; registers new departments into the persistent Library Room; and assembles the writing identity the Writer and both Critics judge against — the hand-authored **Author Skill** (`library room/author_skill.md`, tiered: identity/thought process, frequent behaviours, optional tools) combined with a dynamic style profile that merges across runs. Tone is *not* a user input; it emerges from source + Author Skill + subject.
 
 **Research** — *Expert Research*
 Each department reports from its own lens: key observations, blind spots in my argument, and concrete writing suggestions. Optionally consults a local SearXNG instance — but only when external evidence would genuinely help, never as a hard dependency.
@@ -89,7 +89,7 @@ Each department reports from its own lens: key observations, blind spots in my a
 Deduplicates research into a curated insight set, proposes an outline, gets critiqued, asks a human, routes any rejection to the correct department, then writes the prose.
 
 **Verification** — *Draft Completeness Check, Auto Draft Critic, Article Approval, Final Review*
-Catches truncated generations (with its own independent retry budget), hunts AI tells and clichés, requests human sign-off, then writes a post-mortem.
+The strictest stage. Traces every concrete detail in the draft back to the **raw transcript** and hard-rejects anything classifiable as `UNSUPPORTED INVENTION` regardless of polish — plausibility is not a defence. Then checks the draft against nine named author-voice failure modes (style-trick imitation, polished-AI voice, over-explanation, manufactured humour, sophisticated vocabulary, source fabrication, motivational wrap-up, tone performance, generic inspirational transformation) and can issue two explicit verdicts: *"technically good, but does not feel like the author"* and *"over-performing the author's surface quirks."* Rejects below a humanity rating of 8.5, then writes a post-mortem.
 
 ---
 
@@ -168,9 +168,9 @@ writing-club/
 ├── utils/              # ask_llm, pipeline_logger, project_dumper, library,
 │                       # prompt_loader, author_skill, searx_client
 ├── "library room"/     # PERSISTENT ORG MEMORY
+│   ├── author_skill.md #   THE AUTHOR SKILL (tiered identity, hand-authored)
 │   ├── *.json          #   department definitions (auto-registered)
-│   ├── writing styles/ #   author voice profiles (merged across runs)
-│   └── author_skill.md
+│   └── writing styles/ #   author voice profiles (merged across runs)
 ├── "About Team"/       # Org design docs: handbook, structure, workflow, state
 ├── articles/           # Sample outputs (top-level .txt kept; run folders ignored)
 ├── development_logs/   # Build journal
