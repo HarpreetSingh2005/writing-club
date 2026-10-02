@@ -133,10 +133,16 @@ Keys support comma-separated *or* numbered formats. On a rate limit or API error
 - **Python 3.12+**, managed with **uv**
 - **LangGraph 1.2.8** / LangChain — state graph, checkpointing, `interrupt()` HITL
 - **Providers:** Google Gemini · OpenAI · NVIDIA NIM · Together · local Ollama
-- **FastAPI + Uvicorn** with a vanilla JS frontend (`frontend/`)
+- **Interactive CLI** (`app.py`) — the primary and only supported interface
+- **FastAPI + Uvicorn** (`server.py`) — optional headless JSON API, no bundled UI
 - **openai-whisper** for local transcription
 - **SearXNG** (optional) for untrusted-snippet web discovery
 - **TypedDict state** (`state.py`) with a custom `operator.add` reducer for the append-only pipeline log
+
+> **Interface note:** Writing Club is a **terminal application**. A browser frontend
+> was started but never completed and has been removed from the repository (and
+> gitignored). Because the workflow interrupts twice for human approval, the CLI is
+> not a limitation — the terminal *is* where the decisions get made.
 
 ---
 
@@ -167,11 +173,15 @@ writing-club/
 │   └── author_skill.md
 ├── "About Team"/       # Org design docs: handbook, structure, workflow, state
 ├── articles/           # Sample outputs (top-level .txt kept; run folders ignored)
-├── frontend/           # Web UI
 ├── development_logs/   # Build journal
 ├── uploads/            # Local media input (gitignored)
 └── searxng/            # Local search config (gitignored; example committed)
 ```
+
+**Removed from the repo:** `frontend/` — an unfinished browser UI. The app is
+CLI-first, and the WIP frontend was never functional, so it is gitignored and
+excluded from version control. `server.py` still auto-serves a `frontend/`
+directory if you ever build your own.
 
 ---
 
@@ -255,17 +265,34 @@ Graph still compiles .............. OK
 - Real unit tests around routing logic (the graph is the fragile part)
 - A/B the auto-critics against a no-critics control to prove they earn their cost
 - Structured-output enforcement instead of prompt-parsed JSON for agent returns
+- *If there's appetite:* a real web UI later — but it's a genuine project, not a
+  weekend skin. The API in `server.py` is already shaped for one.
 
 ---
 
 ## 11. Running It
 
 ```bash
+git clone https://github.com/HarpreetSingh2005/writing-club.git
+cd writing-club
 uv sync
 cp .env.example .env      # then fill in your keys
-uv run app.py             # interactive CLI
-uv run app.py uploads/note.mp3   # start from a voice memo
-uv run server.py          # web UI
+```
+
+**The app is a terminal application — this is the way to run it:**
+
+```bash
+uv run app.py                      # interactive, fully prompt-driven
+uv run app.py uploads/note.mp3     # start from a voice memo
+```
+
+It pauses twice for your approval — once at **Flow Approval** (outline/tone/argument),
+once at **Article Approval** (the draft). Type `y` to approve, or reject with feedback
+and the Feedback Router sends the work back to whichever department owns the problem.
+
+Optionally, drive the same pipeline over HTTP (headless, no UI attached):
+```bash
+uv run server.py                   # http://localhost:8000
 ```
 
 Optional: run SearXNG separately and copy `searxng/settings.yml.example` → `settings.yml` to enable web research.

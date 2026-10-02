@@ -1,5 +1,9 @@
 """
-Writing Club — FastAPI Server
+Writing Club — FastAPI Server (headless JSON API)
+
+NOTE: Writing Club's primary interface is the interactive CLI (`uv run app.py`).
+This server exposes the same pipeline over HTTP for programmatic use. It ships
+with NO bundled web UI — bring your own client.
 
 Endpoints:
     POST  /api/start          Upload audio or text, start the workflow
@@ -277,7 +281,10 @@ def _build_response(thread_id: str, result: dict) -> dict:
 
 
 # ─────────────────────────────────────────────
-#  Serve frontend static files
+#  Optional static file serving
+#  No frontend is bundled with this repo (the app is CLI-first and the WIP
+#  web UI was removed). If you add your own assets under `frontend/`, they are
+#  served automatically.
 # ─────────────────────────────────────────────
 frontend_dir = Path(__file__).parent / "frontend"
 if frontend_dir.exists():

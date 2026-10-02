@@ -4,6 +4,10 @@
 
 Instead of generating an article in a single LLM prompt, the project routes inputs through **15 specialized AI agents ("employees")**, implements automated quality-assurance critics, and embeds interactive **human-in-the-loop approvals** to ensure the final output retains your voice and satisfies your editorial goals.
 
+> **Interface: command line only.** Writing Club runs entirely in your terminal. There is **no web UI** — the pipeline pauses at two approval points and waits for you to type a decision, so the CLI *is* the interface. A browser frontend was started but never finished, so it has been removed from this repository.
+>
+> `server.py` exposes the same pipeline as a headless HTTP API for anyone who wants to drive it programmatically. It ships **no bundled UI** — bring your own client.
+
 ---
 
 ## 🏛️ System Architecture & Workflow
@@ -289,28 +293,54 @@ Web research is disabled by default unless `SEARXNG_URL` is set in `.env`.
 
 ## 🛠️ Getting Started
 
+### Prerequisites
+- Python 3.12 or newer
+- [`uv`](https://docs.astral.sh/uv/) (the project is managed with `uv`)
+- At least one LLM provider API key — or a local [Ollama](https://ollama.com) install as a fallback
+
 ### 1. Installation
-Ensure you have `uv` installed, then synchronize the environment:
 ```bash
+git clone https://github.com/HarpreetSingh2005/writing-club.git
+cd writing-club
 uv sync
 ```
 
 ### 2. Configure Environment Variables
-Create a `.env` file in the root directory:
+Copy the template and fill in your keys:
+```bash
+cp .env.example .env
+```
+`.env` is gitignored — never commit it. Minimum viable config:
 ```text
 GEMINI_API_KEY=your_gemini_key
 OPENAI_API_KEY=your_openai_key
 NVIDIA_API_KEY=your_nvidia_key
-OLLAMA_BASE_URL=http://localhost:11434   # optional local fallback
-OLLAMA_MODEL=llama3.2                    # optional local fallback
 ```
+If you'd rather run fully local, set `OLLAMA_ENABLED=true` and pull a model (`ollama pull llama3.2`) with `ollama serve` running — that becomes the fallback when cloud providers fail.
 
-### 3. Run the Interactive App
-Run the interactive CLI app:
+### 3. Run the App
+
+**This is the primary way to use Writing Club:**
 ```bash
 uv run app.py
 ```
-You can also pass an audio file directly to transcribe it:
+
+The app is fully interactive. Paste or type your idea, and the pipeline runs phase by phase, printing every agent's action as it happens. It will stop and ask for your approval twice:
+1. **Flow Approval** — review the proposed outline, tone, and core argument.
+2. **Article Approval** — review the finished draft.
+
+Reply `y` to approve, or reject with feedback describing what should change. Feedback gets routed back to whichever department is responsible.
+
+Start from a voice memo instead of typing:
 ```bash
 uv run app.py uploads/my_voice_memo.mp3
 ```
+
+### Running as an HTTP API (optional)
+```bash
+uv run server.py       # serves on http://localhost:8000
+```
+This is a **headless JSON API** — there is no web interface attached. See `server.py` for the available endpoints.
+
+### Where output goes
+Approved articles and full review packets are written to `/articles`. The `articles/` directory contains generated run folders (`project_log.txt`, `review_context_report.txt`, `draft_for_review.txt`) which are gitignored; a few sample articles are kept at the top level.

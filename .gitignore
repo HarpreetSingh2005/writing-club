@@ -37,6 +37,11 @@ htmlcov/
 fuzzytesting/
 .agents/
 
+# Web frontend (WIP - not working, not shipped).
+# Writing Club is a CLI/terminal application; there is no bundled UI.
+# Kept on local disk while in progress, excluded from the repo.
+frontend/
+
 # Personal media & local runtime input (never commit).
 # Use `uploads/*` (not `uploads/`) so the negation below can re-include .gitkeep.
 uploads/*
